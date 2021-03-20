@@ -23,121 +23,68 @@ int try_smart_eaplogin(void);
 int state;
 static const char default_bind_ip[20] = "0.0.0.0";
 
-int dogcom_main(int argc, char const *argv[])
+int dogcom_main()
 {
-
-    if (argc == 1)
-    {
-        print_help(1);
-    }
-
     char *file_path;
 
-    while (1)
+    static const struct option long_options[] = {
+        {"mode", required_argument, 0, 'm'},
+        {"conf", required_argument, 0, 'c'},
+        {"bindip", required_argument, 0, 'b'},
+        {"log", required_argument, 0, 'l'},
+#ifdef linux
+        {"daemon", no_argument, 0, 'd'},
+        {"802.1x", no_argument, 0, 'x'},
+#endif
+        {"eternal", no_argument, 0, 'e'},
+        {"verbose", no_argument, 0, 'v'},
+        {"help", no_argument, 0, 'h'},
+        {0, 0, 0, 0}};
+
+    int c;
+    int option_index = 0;
+#ifdef linux
+    c = getopt_long(argc, argv, "m:c:b:l:dxevh", long_options, &option_index);
+#else
+    // c = getopt_long(argc, argv, "m:c:b:l:evh", long_options, &option_index);
+#endif
+
+    strcpy(mode, "pppoe");
+
+#ifndef __APPLE__
+    if (mode != NULL)
     {
-        static const struct option long_options[] = {
-            {"mode", required_argument, 0, 'm'},
-            {"conf", required_argument, 0, 'c'},
-            {"bindip", required_argument, 0, 'b'},
-            {"log", required_argument, 0, 'l'},
-#ifdef linux
-            {"daemon", no_argument, 0, 'd'},
-            {"802.1x", no_argument, 0, 'x'},
 #endif
-            {"eternal", no_argument, 0, 'e'},
-            {"verbose", no_argument, 0, 'v'},
-            {"help", no_argument, 0, 'h'},
-            {0, 0, 0, 0}};
-
-        int c;
-        int option_index = 0;
 #ifdef linux
-        c = getopt_long(argc, argv, "m:c:b:l:dxevh", long_options, &option_index);
+        char path_c[PATH_MAX];
+        realpath(".\\dogcom.conf", path_c);
+        file_path = strdup(path_c);
 #else
-        c = getopt_long(argc, argv, "m:c:b:l:evh", long_options, &option_index);
-#endif
-
-        if (c == -1)
-        {
-            break;
-        }
-        switch (c)
-        {
-        case 'm':
-            if (strcmp(optarg, "dhcp") == 0)
-            {
-                strcpy(mode, optarg);
-            }
-            else if (strcmp(optarg, "pppoe") == 0)
-            {
-                strcpy(mode, optarg);
-            }
-            else
-            {
-                printf("unknown mode\n");
-                exit(1);
-            }
-            break;
-        case 'c':
-#ifndef __APPLE__
-            if (mode != NULL)
-            {
-#endif
-#ifdef linux
-                char path_c[PATH_MAX];
-                realpath(optarg, path_c);
-                file_path = strdup(path_c);
-#else
-            file_path = optarg;
+    file_path = ".\\dogcom.conf";
 #endif
 #ifndef __APPLE__
-            }
-#endif
-            break;
-        case 'b':
-            strcpy(bind_ip, optarg);
-            break;
-        case 'l':
-#ifndef __APPLE__
-            if (mode != NULL)
-            {
-#endif
-#ifdef linux
-                char path_l[PATH_MAX];
-                realpath(optarg, path_l);
-                log_path = strdup(path_l);
-#else
-            log_path = optarg;
-#endif
-                logging_flag = 1;
-#ifndef __APPLE__
-            }
-#endif
-            break;
-#ifdef linux
-        case 'd':
-            daemon_flag = 1;
-            break;
-        case 'x':
-            eapol_flag = 1;
-            break;
-#endif
-        case 'e':
-            eternal_flag = 1;
-            break;
-        case 'v':
-            verbose_flag = 1;
-            break;
-        case 'h':
-            print_help(0);
-            break;
-        case '?':
-            print_help(1);
-            break;
-        default:
-            break;
-        }
     }
+#endif
+
+#ifndef __APPLE__
+    if (mode != NULL)
+    {
+#endif
+#ifdef linux
+        char path_l[PATH_MAX];
+        realpath(".\\dogcom.conf", path_l);
+        log_path = strdup(path_l);
+#else
+    log_path = optarg;
+#endif
+        logging_flag = 1;
+#ifndef __APPLE__
+    }
+#endif
+
+#ifdef linux
+    daemon_flag = 1;
+#endif
 
 #ifndef __APPLE__
     if (mode != NULL && file_path != NULL)
@@ -174,7 +121,7 @@ int dogcom_main(int argc, char const *argv[])
             {
                 memcpy(bind_ip, default_bind_ip, sizeof(default_bind_ip));
             }
-            dogcom(4);
+            dogcom(5);
         }
         else
         {
@@ -182,11 +129,7 @@ int dogcom_main(int argc, char const *argv[])
         }
 #ifndef __APPLE__
     }
-    else
-    {
-        printf("Need more options!\n\n");
-        return 1;
-    }
+
 #endif
     return 0;
 }
@@ -225,6 +168,7 @@ DWORD rasEntrySize = sizeof(params);
 RASDIALPARAMSA rasDialParams;
 HRASCONN dialHandle;
 RASCONNSTATUSA rasConnStus;
+
 int main(int argc, char const *argv[])
 {
     args[0] = argv[0];
@@ -332,10 +276,16 @@ setprop:
         Sleep(500);
     }
     // printf("Normal\n");
-    dogcom_main(argcs, args);
+    if (state == 8192)
+        dogcom_main(argcs, args);
+    else
+    {
+        goto end;
+    }
+    return 0;
 end:
     printf("error\n");
-    return 0;
+    return -1;
 }
 
 #ifdef linux
