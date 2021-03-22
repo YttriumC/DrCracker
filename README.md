@@ -17,3 +17,6 @@
  ```
 ## Thanks:
 - [mchome/dogcom](https://github.com/mchome/dogcom)
+# 免责声明:
+## 本项目仅供教学使用, 严禁用于商业用途, 请在下载后24小时之内删除副本. 
+## 开源协议: GPLv3.
