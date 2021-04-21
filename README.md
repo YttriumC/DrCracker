@@ -6,6 +6,7 @@
  Windows共享用起来不是很舒服, 目前只用做DRCOM软件的代替使用,并不共享网络.
  ### 本项目只限使用PPPoE拨号的校园网,并且账号前加回车符.
 ## 使用
+ ### [下载该项目](https://github.com/Lu7fer/DrCracker/releases)
  ### dial.conf
  ```
   username=你的宽带登录账号  
