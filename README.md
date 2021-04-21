@@ -1,7 +1,9 @@
 # DrCracker
- 解除学校CrCOM的限制  
+ 解除学校DrCOM的限制  
  使用了[dogcom](https://github.com/mchome/dogcom)的心跳包代码.  
  本Repo使用GPLv3开源协议.  
+ 发现学校使用深信服检测共享, 没辙了, 除了代理流量.
+ Windows共享用起来不是很舒服, 目前只用做DRCOM软件的代替使用,并不共享网络.
  ### 本项目只限使用PPPoE拨号的校园网,并且账号前加回车符.
 ## 使用
  ### dial.conf
