@@ -3,8 +3,9 @@
  使用了[dogcom](https://github.com/mchome/dogcom)的心跳包代码.  
  本Repo使用GPLv3开源协议.  
  发现学校使用深信服检测共享, 没辙了, 除了代理流量.
- Windows共享用起来不是很舒服, 目前只用做DRCOM软件的代替使用,并不共享网络.
- ### 本项目只限使用PPPoE拨号的校园网,并且账号前加回车符.
+ 目前只用做DRCOM软件的代替使用,并不共享网络.
+ ** 不建议使用本项目突破宽带共享限制 **
+ ### 本项目只限使用PPPoE拨号的校园网,并且账号前加回车符('\r\n').
 ## 使用
  ### [下载该项目](https://github.com/Lu7fer/DrCracker/releases)
  ### dial.conf
